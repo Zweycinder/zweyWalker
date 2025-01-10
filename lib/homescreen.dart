@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bluetooth_classic/bluetooth_classic.dart';
+import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final BluetoothClassic _bluePlug = BluetoothClassic();
 
   bool isblueScanning = false;
+  bool scannedBefore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
             color: const Color.fromARGB(255, 255, 195, 215),
             height: 300.h,
             width: double.infinity,
-            child: StreamBuilder<Object>(
-                stream: null,
-                builder: (context, snapshot) {
-                  return isblueScanning
-                      ? Placeholder()
-                      : ListView.builder(
-                          itemCount: _discoveredDevices.length,
-                          itemBuilder: (context, index) => BlueDeviceTile(
-                              name: _discoveredDevices[index].name ?? "Unknown",
-                              address: _discoveredDevices[index].address));
-                }),
+            child: isblueScanning
+                ? Placeholder()
+                : ListView.builder(
+                    itemCount: _discoveredDevices.length,
+                    itemBuilder: (context, index) => BlueDeviceTile(
+                        name: _discoveredDevices[index].name ?? "Unknown",
+                        address: _discoveredDevices[index].address)),
           ),
           ElevatedButton(
               onPressed: () {
@@ -54,23 +52,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
 
                   _blueClassic.startScan();
+
+                  Timer(Duration(seconds: 10), () {
+                    if (isblueScanning) {
+                      _blueClassic.stopScan();
+                      setState(() {
+                        isblueScanning = false;
+                      });
+                    }
+                  });
+                  _discoveredDevices = [];
                   _blueClassic.scanResults.listen(
                     (event) {
-                      _discoveredDevices = [..._discoveredDevices, event];
-                    },
-                    onDone: () {
                       setState(() {
-                        debugPrint('object');
+                        _discoveredDevices = [..._discoveredDevices, event];
+                      });
+                    },
+                    onError: (error) {
+                      print("Error during scanning: $error");
+                      setState(() {
                         isblueScanning = false;
                       });
                     },
-                  );
-                  Future.delayed(
-                    Duration(seconds: 5),
-                    () {
-                      _bluePlug.stopScan();
+                    onDone: () {
                       setState(() {
-                        debugPrint('object');
                         isblueScanning = false;
                       });
                     },
