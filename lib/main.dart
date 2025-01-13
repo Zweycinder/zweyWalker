@@ -7,7 +7,7 @@ import 'package:zwey_walker/theme/light_theme.dart';
 import 'package:zwey_walker/theme/theme_provider.dart';
 
 void main() {
-  runApp(Provider(
+  runApp(ListenableProvider(
     create: (context) => ThemeProvider(),
     child: const MyApp(),
   ));
