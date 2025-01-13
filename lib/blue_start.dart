@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:zwey_walker/homescreen.dart';
+import 'package:zwey_walker/screens/homescreen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 
