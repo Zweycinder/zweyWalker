@@ -1,7 +1,8 @@
+import 'package:bluetooth_classic/bluetooth_classic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:zwey_walker/screens/homescreen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({super.key});
@@ -11,13 +12,20 @@ class ConnectionScreen extends StatefulWidget {
 }
 
 class _ConnectionScreenState extends State<ConnectionScreen> {
-  final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
+  final FlutterBlueClassic _blueClassic =
+      FlutterBlueClassic(usesFineLocation: true);
+  final BluetoothClassic _blue5ra = BluetoothClassic();
+  @override
+  void initState() {
+    anythngi();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _blueSerial.isEnabled,
+        future: _blueClassic.isEnabled,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -60,7 +68,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             ),
             TextButton(
               onPressed: () {
-                _blueSerial.requestEnable();
+                _blueClassic.turnOn;
                 setState(() {});
                 Navigator.of(dialogContext).pop();
               },
@@ -70,6 +78,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         );
       },
     );
+  }
+
+  void anythngi() {
+    _blue5ra.initPermissions();
   }
 }
 

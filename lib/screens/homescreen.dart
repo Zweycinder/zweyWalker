@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:bluetooth_classic/bluetooth_classic.dart';
+import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:zwey_walker/screens/controllerscreen.dart';
 import 'package:zwey_walker/widgets/devicetile_widget.dart';
 import 'package:zwey_walker/widgets/drawer.dart';
@@ -15,11 +16,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final FlutterBlueClassic _blueClassic = FlutterBlueClassic();
-  List<BluetoothDiscoveryResult> _discoveredDevices = [];
-  late BluetoothConnection _blueDevice;
-
-  final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
+  final BluetoothClassic _blueClassic = BluetoothClassic();
+  List<Device> _discoveredDevices = [];
+  late Device _connectedDevice;
 
   bool isblueScanning = false;
 
@@ -47,24 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.black,
                     ),
                   )
-                // TODO try to make it stream builder not listview
                 : ListView.builder(
                     itemCount: _discoveredDevices.length,
                     itemBuilder: (context, index) => MyBlueDeviceTile(
-                      name: _discoveredDevices[index].device.name ?? "Unknown",
-                      address: _discoveredDevices[index].device.address,
-                      onTap: () async {
-                        _blueDevice = await BluetoothConnection.toAddress(
-                          _discoveredDevices[index].device.address,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Controllerscreen(
-                              blueDevice: _blueDevice,
-                            ),
-                          ),
-                        );
+                      name: _discoveredDevices[index].name ?? "Unknown",
+                      address: _discoveredDevices[index].address,
+                      onTap: () {
+                        _blueClassic.connect(_discoveredDevices[index].address,
+                            "00001101-0000-1000-8000-00805F9B34FB");
+                        if (Device.connected == 1) {
+                          print(Device.connected);
+                        }
                       },
                     ),
                   ),
@@ -83,52 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.symmetric(horizontal: 6.w),
             child: TextButton(
               onPressed: () {
-                if (isblueScanning == false) {
-                  setState(() {
-                    isblueScanning = true;
-                  });
-
-                  _discoveredDevices = [];
-                  _blueSerial.startDiscovery().listen(
-                    (event) {
-                      setState(() {
-                        _discoveredDevices = [..._discoveredDevices, event];
-                      });
-                    },
-                    onError: (error) {
-                      setState(() {
-                        isblueScanning = false;
-                      });
-                    },
-                    onDone: () {
-                      setState(() {
-                        isblueScanning = false;
-                      });
-                    },
-                  );
-                }
+                _scan();
               },
               child: Text(
                 'S C A N',
-              ),
-            ),
-          ),
-
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                width: 1,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w),
-            child: TextButton(
-              onPressed: () async {
-                _blueDevice.output.add(utf8.encoder.convert("A\r\n"));
-                await _blueDevice.output.allSent;
-              },
-              child: Text(
-                'T E S T',
               ),
             ),
           ),
@@ -136,8 +86,23 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
+  Future<void> _scan() async {
+    await _blueClassic.startScan();
+    _blueClassic.onDeviceDiscovered().listen(
+      (event) {
+        setState(() {
+          _discoveredDevices = [..._discoveredDevices, event];
+        });
+      },
+    );
+    setState(() {
+      isblueScanning = false;
+    });
+  }
+}
+ 
+ 
 
 // import 'dart:async';
 // import 'package:flutter/material.dart';

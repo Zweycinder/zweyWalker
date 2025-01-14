@@ -39,9 +39,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
 
   # this i from github repo fork 
-  flutter_bluetooth_serial:
-    git:
-      url: https://github.com/VaclavKosak/flutter_bluetooth_serial.git
+
   bluetooth_classic: ^0.0.2
   
   provider: ^6.1.2
