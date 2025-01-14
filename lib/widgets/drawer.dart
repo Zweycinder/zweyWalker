@@ -11,8 +11,13 @@ class MyDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-          Container(
-            height: 300.h,
+          SizedBox(
+            height: 200.h,
+            child: Center(child: Text('LOGO')),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Divider(),
           ),
           Container(
             decoration: BoxDecoration(
