@@ -1,11 +1,18 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
+>>>>>>>>>>
+>>>>>>>>>>remove these lines
+>>>>>>>>>
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
 }
 
-rootProject.buildDir = "../build"
+>>>>>>>>>>>>
+>>>>>>>>>>>> and add these instead
+>>>>>>>>>>>>
+
 subprojects {
     afterEvaluate { project ->
         if (project.extensions.findByName("android") != null) {
@@ -31,8 +38,4 @@ subprojects {
 
     project.buildDir = "${rootProject.buildDir}/${project.name}"
     project.evaluationDependsOn(":app")
-}
-
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
 }
