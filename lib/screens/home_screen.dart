@@ -1,11 +1,9 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zwey_walker/screens/controllerscreen.dart';
-import 'package:zwey_walker/widgets/devicetile_widget.dart';
 import 'package:zwey_walker/widgets/drawer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zwey_walker/screens/controller_screen.dart';
+import 'package:zwey_walker/widgets/devicetile_widget.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,12 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final FlutterBlueClassic _blueClassic = FlutterBlueClassic();
+  final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
   List<BluetoothDiscoveryResult> _discoveredDevices = [];
   late BluetoothConnection _blueDevice;
-
-  final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
-
   bool isblueScanning = false;
 
   @override
@@ -38,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
               border: Border.all(width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 2),
             margin: EdgeInsets.all(12),
             height: 300.h,
             width: double.infinity,
@@ -123,10 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             padding: EdgeInsets.symmetric(horizontal: 6.w),
             child: TextButton(
-              onPressed: () async {
-                _blueDevice.output.add(utf8.encoder.convert("A\r\n"));
-                await _blueDevice.output.allSent;
-              },
+              onPressed: () async {},
               child: Text(
                 'T E S T',
               ),

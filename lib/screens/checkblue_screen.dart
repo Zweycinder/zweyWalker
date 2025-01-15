@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:zwey_walker/screens/homescreen.dart';
+import 'package:zwey_walker/screens/home_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
-class ConnectionScreen extends StatefulWidget {
-  const ConnectionScreen({super.key});
+class CheckBluetoothScreen extends StatefulWidget {
+  const CheckBluetoothScreen({super.key});
 
   @override
-  State<ConnectionScreen> createState() => _ConnectionScreenState();
+  State<CheckBluetoothScreen> createState() => _CheckBluetoothScreenState();
 }
 
-class _ConnectionScreenState extends State<ConnectionScreen> {
+class _CheckBluetoothScreenState extends State<CheckBluetoothScreen> {
   final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
+  bool isBluetoothOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkBluetooth();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _blueSerial.isEnabled,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data == true) {
-            return HomeScreen();
-          } else {
-            return Center(
+      body: isBluetoothOn
+          ? HomeScreen()
+          : Center(
               child: GestureDetector(
                 onTap: () => showEnableBluetoothDialog(context),
                 child: Icon(
@@ -35,15 +34,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   color: Colors.blue,
                 ),
               ),
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 
-  // Pop up a dialog that ask users to turn on bluetooth and if Yes
-  // bluetooth will be turned out
   Future<void> showEnableBluetoothDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -59,9 +53,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                _blueSerial.requestEnable();
-                setState(() {});
+              onPressed: () async {
+                await _blueSerial.requestEnable();
+                checkBluetooth();
+                // ignore: use_build_context_synchronously
                 Navigator.of(dialogContext).pop();
               },
               child: const Text('Enable Bluetooth'),
@@ -71,7 +66,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       },
     );
   }
+
+  Future<void> checkBluetooth() async {
+    bool? isEnabled = await _blueSerial.isEnabled;
+    setState(() {
+      isBluetoothOn = isEnabled!;
+    });
+  }
 }
+
 
 /*
 
