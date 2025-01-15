@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
-
 import 'package:zwey_walker/screens/homescreen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_blue_classic/flutter_blue_classic.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class ConnectionScreen extends StatefulWidget {
-  const ConnectionScreen({
-    super.key,
-  });
+  const ConnectionScreen({super.key});
 
   @override
   State<ConnectionScreen> createState() => _ConnectionScreenState();
 }
 
 class _ConnectionScreenState extends State<ConnectionScreen> {
-  final FlutterBlueClassic _blueClassic = FlutterBlueClassic();
+  final FlutterBluetoothSerial _blueSerial = FlutterBluetoothSerial.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _blueClassic.isEnabled,
+        future: _blueSerial.isEnabled,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -45,6 +42,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     );
   }
 
+  // Pop up a dialog that ask users to turn on bluetooth and if Yes
+  // bluetooth will be turned out
   Future<void> showEnableBluetoothDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -61,7 +60,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             ),
             TextButton(
               onPressed: () {
-                _blueClassic.turnOn();
+                _blueSerial.requestEnable();
                 setState(() {});
                 Navigator.of(dialogContext).pop();
               },

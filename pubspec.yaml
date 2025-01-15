@@ -45,6 +45,7 @@ dependencies:
   bluetooth_classic: ^0.0.2
   
   provider: ^6.1.2
+  flutter_joystick: ^0.2.1
   
 
 dev_dependencies:
