@@ -16,8 +16,8 @@ class _CheckBluetoothScreenState extends State<CheckBluetoothScreen> {
 
   @override
   void initState() {
-    super.initState();
     checkBluetooth();
+    super.initState();
   }
 
   @override
