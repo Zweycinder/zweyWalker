@@ -30,17 +30,20 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-              border: Border.all(width: 1),
+              border: Border.all(
+                width: 1,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               borderRadius: BorderRadius.circular(24),
             ),
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 2),
+            padding: EdgeInsets.fromLTRB(14, 14, 14, 2),
             margin: EdgeInsets.all(12),
             height: 300.h,
             width: double.infinity,
             child: isblueScanning
                 ? Center(
                     child: CircularProgressIndicator(
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   )
                 // TODO try to make it stream builder not listview
@@ -54,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _discoveredDevices[index].device.address,
                         );
                         Navigator.push(
+                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => Controllerscreen(
@@ -66,63 +70,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
           ),
           SizedBox(
-            height: 100.h,
+            height: 120.h,
           ),
           // start scanning and add list of scanned devices
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                width: 1,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w),
-            child: TextButton(
-              onPressed: () {
-                if (isblueScanning == false) {
-                  setState(() {
-                    isblueScanning = true;
-                  });
-
-                  _discoveredDevices = [];
-                  _blueSerial.startDiscovery().listen(
-                    (event) {
-                      setState(() {
-                        _discoveredDevices = [..._discoveredDevices, event];
-                      });
-                    },
-                    onError: (error) {
-                      setState(() {
+          TextButton(
+            onPressed: () {
+              if (isblueScanning == false) {
+                setState(() {
+                  isblueScanning = true;
+                });
+                _discoveredDevices = [];
+                _blueSerial.startDiscovery().listen(
+                  (event) {
+                    setState(() {
+                      _discoveredDevices = [..._discoveredDevices, event];
+                    });
+                  },
+                  onError: (error) {
+                    setState(() {
+                      isblueScanning = false;
+                    });
+                  },
+                  onDone: () {
+                    setState(
+                      () {
                         isblueScanning = false;
-                      });
-                    },
-                    onDone: () {
-                      setState(() {
-                        isblueScanning = false;
-                      });
-                    },
-                  );
-                }
-              },
-              child: Text(
-                'S C A N',
-              ),
-            ),
-          ),
-
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                width: 1,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w),
-            child: TextButton(
-              onPressed: () async {},
-              child: Text(
-                'T E S T',
-              ),
+                      },
+                    );
+                  },
+                );
+              }
+            },
+            child: Text(
+              'S C A N',
+              style: TextStyle(fontSize: 15.w),
             ),
           ),
         ],

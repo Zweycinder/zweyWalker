@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:zwey_walker/widgets/spiderweb_control.dart';
 
 class Controllerscreen extends StatefulWidget {
   const Controllerscreen({super.key, required this.blueDevice});
@@ -20,7 +21,7 @@ class _ControllerscreenState extends State<Controllerscreen> {
 
   @override
   void dispose() {
-    widget.blueDevice.finish();
+    // widget.blueDevice.finish();
     super.dispose();
   }
 
@@ -31,16 +32,20 @@ class _ControllerscreenState extends State<Controllerscreen> {
         centerTitle: true,
         title: Text('C O N T R O L'),
       ),
-      body: Center(
-        child: Column(
-            children: [SizedBox(height: 1, width: 100, child: Placeholder())]),
+      body: Column(
+        children: [
+          SpiderWebControl(),
+          TextButton(onPressed: () {}, child: Text('isconnected')),
+          TextButton(onPressed: () {}, child: Text('send')),
+          TextButton(onPressed: () {}, child: Text('recived')),
+        ],
       ),
     );
   }
 
   void _sendMessage(String message) async {
     widget.blueDevice.output
-        .add(Uint8List.fromList(utf8.encode(message + "\r\n")));
+        .add(Uint8List.fromList(utf8.encode("$message\r\n")));
     await widget.blueDevice.output.allSent;
   }
 
