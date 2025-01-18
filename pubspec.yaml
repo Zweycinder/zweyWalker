@@ -47,6 +47,8 @@ dependencies:
   flutter_native_splash: ^2.4.4
   animated_splash_screen: ^1.3.0
   lottie: ^3.3.1
+  holding_gesture: ^1.2.0
+  location: ^7.0.1
   
   
 
@@ -76,11 +78,7 @@ flutter:
   assets:
     - assets/spiderloading/whitespider_loading.json
     - assets/spiderloading/blackspider_loading.json
-    - assets/controller_assets/top.png
-    - assets/controller_assets/bottom.png
-    - assets/controller_assets/right.png
-    - assets/controller_assets/left.png
-    - assets/controller_assets/sword.png
+    - assets/controller_assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
