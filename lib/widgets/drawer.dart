@@ -54,6 +54,14 @@ class MyDrawer extends StatelessWidget {
               ],
             ),
           ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30.0),
+            child: Text(
+              'Made by Zweycinder',
+              style: TextStyle(fontFamily: 'OptimusPrinceps'),
+            ),
+          )
         ],
       ),
     );

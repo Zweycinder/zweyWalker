@@ -33,39 +33,46 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-      ),
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          setState(() {
-            _containerWidth = MediaQuery.of(context).size.width;
-            _containerHeight = MediaQuery.of(context).size.height;
+    final theme = Theme.of(context).colorScheme;
 
-            // Check if touch is inside the container's bounds
-            if (_isTouchInsideContainer(details.localPosition)) {
-              _touchPosition = details.localPosition;
-              _printTouchDirection(details.localPosition,
-                  context); // Print direction only when inside container
-            }
-          });
-        },
-        onPanEnd: (_) {
-          setState(() {
-            _touchPosition = Offset(-1, -1);
-          });
-        },
-        child: CustomPaint(
-          painter: LightEffectPainter(_touchPosition),
+    return Center(
+      child: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            setState(() {
+              _containerWidth = MediaQuery.of(context).size.width;
+              _containerHeight = MediaQuery.of(context).size.height;
+
+              if (_isTouchInsideContainer(details.localPosition)) {
+                _touchPosition = details.localPosition;
+                _printTouchDirection(details.localPosition, context);
+              }
+            });
+          },
+          onPanEnd: (_) {
+            setState(() {
+              _touchPosition = Offset(-1, -1);
+            });
+          },
+          child: CustomPaint(
+            painter: SpiderWebPainter(
+              _touchPosition,
+              webColor: theme.surface,
+              threadColor: theme.primary,
+              minorThreadColor: theme.secondary,
+              dewDropColor: theme.inversePrimary,
+            ),
+          ),
         ),
       ),
     );
   }
 
-  // Checks if the touch position is inside the circular container
   bool _isTouchInsideContainer(Offset position) {
     final center = Offset(_containerWidth / 2, _containerHeight / 2);
     final radius = _containerWidth / 2;
@@ -73,7 +80,6 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
     return distance <= radius;
   }
 
-  // on diraction trigger
   void _printTouchDirection(Offset position, BuildContext context) {
     final center = Offset(MediaQuery.of(context).size.width / 2,
         MediaQuery.of(context).size.height / 2);
@@ -83,19 +89,16 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
   }
 
   String _getDirectionFromAngle(double angle, BuildContext context) {
-    // Set a larger threshold for the disabled center area (e.g., 100px radius)
     double centerThreshold = 80.0;
     double centerDistance = (_touchPosition -
             Offset(MediaQuery.of(context).size.width / 2,
                 MediaQuery.of(context).size.height / 2))
         .distance;
 
-    // If the touch is inside the disabled center zone, don't trigger direction
     if (centerDistance < centerThreshold) {
       return 'Disabled Zone';
     }
 
-    // Otherwise, proceed to determine direction
     if (angle >= -pi / 8 && angle < pi / 8) {
       return 'Right';
     } else if (angle >= pi / 8 && angle < 3 * pi / 8) {
@@ -116,8 +119,12 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
   }
 }
 
-class LightEffectPainter extends CustomPainter {
+class SpiderWebPainter extends CustomPainter {
   final Offset touchPosition;
+  final Color webColor;
+  final Color threadColor;
+  final Color minorThreadColor;
+  final Color dewDropColor;
   final int radialDivisions = 36;
   final int circleDivisions = 25;
   final double maxDistance = 400;
@@ -125,8 +132,14 @@ class LightEffectPainter extends CustomPainter {
   final List<Offset> webPoints = [];
   final Random random;
 
-  LightEffectPainter(this.touchPosition, {int seed = 0})
-      : random = Random(seed);
+  SpiderWebPainter(
+    this.touchPosition, {
+    required this.webColor,
+    required this.threadColor,
+    required this.minorThreadColor,
+    required this.dewDropColor,
+    int seed = 0,
+  }) : random = Random(seed);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -169,6 +182,21 @@ class LightEffectPainter extends CustomPainter {
   }
 
   void _drawWeb(Canvas canvas, Size size, List<Offset> warpedPoints) {
+    Paint mainThreadPaint = Paint()
+      ..color = threadColor.withValues(alpha: 0.8)
+      ..strokeWidth = 1.5
+      ..isAntiAlias = true;
+
+    Paint radialThreadPaint = Paint()
+      ..color = threadColor.withValues(alpha: 0.8)
+      ..strokeWidth = 1.5
+      ..isAntiAlias = true;
+
+    Paint minorThreadPaint = Paint()
+      ..color = minorThreadColor.withValues(alpha: 0.6)
+      ..strokeWidth = 0.5
+      ..isAntiAlias = true;
+
     for (int r = 0; r < circleDivisions; r++) {
       for (int i = 0; i < radialDivisions; i++) {
         int currentIndex = r * radialDivisions + i;
@@ -180,19 +208,11 @@ class LightEffectPainter extends CustomPainter {
             : -1;
 
         if (nextIndex >= 0) {
-          Paint mainThreadPaint = Paint()
-            ..color = Colors.grey.shade600.withValues(alpha: 0.8)
-            ..strokeWidth = 1.5
-            ..isAntiAlias = true;
           canvas.drawLine(warpedPoints[currentIndex], warpedPoints[nextIndex],
               mainThreadPaint);
         }
 
         if (radialIndex >= 0) {
-          Paint radialThreadPaint = Paint()
-            ..color = Colors.grey.shade600.withValues(alpha: 0.8)
-            ..strokeWidth = 1.5
-            ..isAntiAlias = true;
           canvas.drawLine(warpedPoints[currentIndex], warpedPoints[radialIndex],
               radialThreadPaint);
         }
@@ -200,17 +220,14 @@ class LightEffectPainter extends CustomPainter {
         if (nextIndex >= 0 && radialIndex >= 0) {
           Offset midPoint =
               (warpedPoints[currentIndex] + warpedPoints[nextIndex]) / 2;
-          Paint minorThreadPaint = Paint()
-            ..color = Colors.grey.shade700.withValues(alpha: 0.6)
-            ..strokeWidth = 0.5
-            ..isAntiAlias = true;
           canvas.drawLine(
               midPoint, warpedPoints[radialIndex], minorThreadPaint);
         }
       }
     }
 
-    Paint dewDropPaint = Paint()..color = Colors.white.withValues(alpha: 0.6);
+    Paint dewDropPaint = Paint()..color = dewDropColor.withValues(alpha: 0.6);
+
     for (var point in warpedPoints) {
       if (random.nextDouble() < 0.05) {
         canvas.drawCircle(point, 2.0, dewDropPaint);
