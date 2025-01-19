@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:holding_gesture/holding_gesture.dart';
 
 class ControllerArrows extends StatelessWidget {
@@ -24,10 +25,11 @@ class ControllerArrows extends StatelessWidget {
       child: SizedBox(
         height: highet.h,
         width: width.w,
-        child: Image.asset(
+        child: SvgPicture.asset(
           name,
-          scale: imageScale.w,
-          color: Theme.of(context).colorScheme.inversePrimary,
+          theme: SvgTheme(
+            currentColor: Theme.of(context).colorScheme.inversePrimary,
+          ),
         ),
       ),
     );

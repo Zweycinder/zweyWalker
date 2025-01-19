@@ -48,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: isblueScanning
                   ? Center(
                       child: SizedBox(
-                        height: 150,
-                        width: 150,
+                        height: 150.h,
+                        width: 150.w,
                         child: Lottie.asset(
                           Theme.of(context).colorScheme.surface ==
                                   Colors.grey.shade300
@@ -110,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // bluetooth and location check & request access & request to turn on all before scanning
   Future<void> _checkPermissionsAndStartScan() async {
     if (await Permission.bluetooth.isGranted &&
         await Permission.bluetoothScan.isGranted &&
@@ -137,7 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
           _checkPermissionsAndStartScan();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Permissions not granted')),
+            SnackBar(
+              content: Text('Permissions not granted'),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       }

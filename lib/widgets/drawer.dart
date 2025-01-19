@@ -59,7 +59,10 @@ class MyDrawer extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 30.0),
             child: Text(
               'Made by Zweycinder',
-              style: TextStyle(fontFamily: 'OptimusPrinceps'),
+              style: TextStyle(
+                fontFamily: 'OptimusPrinceps',
+                fontWeight: FontWeight.w700,
+              ),
             ),
           )
         ],

@@ -100,21 +100,21 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
     }
 
     if (angle >= -pi / 8 && angle < pi / 8) {
-      return 'Right';
+      return 'R';
     } else if (angle >= pi / 8 && angle < 3 * pi / 8) {
-      return 'Bottom Right';
+      return 'BR';
     } else if (angle >= 3 * pi / 8 && angle < 5 * pi / 8) {
-      return 'Bottom';
+      return 'B';
     } else if (angle >= 5 * pi / 8 && angle < 7 * pi / 8) {
-      return 'Bottom Left';
+      return 'BL';
     } else if (angle >= 7 * pi / 8 || angle < -7 * pi / 8) {
-      return 'Left';
+      return 'L';
     } else if (angle >= -7 * pi / 8 && angle < -5 * pi / 8) {
-      return 'Top Left';
+      return 'TL';
     } else if (angle >= -5 * pi / 8 && angle < -3 * pi / 8) {
-      return 'Top';
+      return 'T';
     } else {
-      return 'Top Right';
+      return 'TR';
     }
   }
 }

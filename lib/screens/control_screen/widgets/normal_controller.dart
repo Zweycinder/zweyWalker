@@ -17,19 +17,15 @@ class _NormalControlState extends State<NormalControl> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 80.h,
-              width: 80.h,
+            SizedBox(height: 80.h, width: 80.w),
+            ControllerArrows(
+              name: 'assets/controller_assets/top.svg',
+              onHold: () {},
             ),
             ControllerArrows(
-              name: 'assets/controller_assets/top.png',
-              onHold: () {
-                print('cat');
-              },
-            ),
-            ControllerArrows(
-              name: 'assets/controller_assets/rotate_left.png',
+              name: 'assets/controller_assets/rotate_left.svg',
               onHold: () {},
             ),
           ],
@@ -38,16 +34,15 @@ class _NormalControlState extends State<NormalControl> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ControllerArrows(
-              name: 'assets/controller_assets/left.png',
+              name: 'assets/controller_assets/left.svg',
               onHold: () {},
             ),
             ControllerArrows(
-              name: 'assets/controller_assets/center.png',
+              name: 'assets/controller_assets/center.svg',
               onHold: () {},
-              imageScale: 7,
             ),
             ControllerArrows(
-              name: 'assets/controller_assets/right.png',
+              name: 'assets/controller_assets/right.svg',
               onHold: () {},
             ),
           ],
@@ -55,18 +50,13 @@ class _NormalControlState extends State<NormalControl> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 80.h,
-              width: 80.h,
+            SizedBox(height: 80.h, width: 80.w),
+            ControllerArrows(
+              name: 'assets/controller_assets/bottom.svg',
+              onHold: () {},
             ),
             ControllerArrows(
-              name: 'assets/controller_assets/bottom.png',
-              onHold: () {
-                print('cat');
-              },
-            ),
-            ControllerArrows(
-              name: 'assets/controller_assets/rotate_right.png',
+              name: 'assets/controller_assets/rotate_right.svg',
               onHold: () {},
             ),
           ],

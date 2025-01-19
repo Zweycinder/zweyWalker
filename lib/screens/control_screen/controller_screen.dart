@@ -23,7 +23,6 @@ class _ControllerscreenState extends State<Controllerscreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('device is connected'),
-          duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),
       );
