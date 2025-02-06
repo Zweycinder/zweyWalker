@@ -49,6 +49,11 @@ dependencies:
   holding_gesture: ^1.2.0
   location: ^7.0.1
   flutter_svg: ^2.0.17
+  http: ^1.3.0
+  record: ^5.2.0
+  chat_gpt_sdk: ^3.1.4
+  flutter_dotenv: ^5.2.1
+  speech_to_text: ^7.0.0
   
   
 
@@ -79,6 +84,8 @@ flutter:
     - assets/spiderloading/whitespider_loading.json
     - assets/spiderloading/blackspider_loading.json
     - assets/controller_assets/
+    
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
