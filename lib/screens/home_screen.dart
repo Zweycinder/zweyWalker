@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
+import 'package:location/location.dart' as loc;
 import 'package:zwey_walker/widgets/drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zwey_walker/screens/control_screen/controller_screen.dart';
 import 'package:zwey_walker/widgets/devicetile_widget.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart' as loc;
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:zwey_walker/screens/control_screen/controller_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

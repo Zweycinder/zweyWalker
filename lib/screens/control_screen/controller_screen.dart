@@ -1,4 +1,3 @@
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/material.dart';
 // import 'package:speech_to_text/speech_to_text.dart';
 // import 'package:speech_to_text/speech_recognition_result.dart';
@@ -20,6 +19,9 @@ class _ControllerscreenState extends State<Controllerscreen> {
   // SpeechToText _speechToText = SpeechToText();
   // bool _speechEnabled = false;
   // String _lastWords = '';
+
+  //  dotenv.env['Token'],
+
   bool controller = true;
 
   @override
@@ -45,6 +47,7 @@ class _ControllerscreenState extends State<Controllerscreen> {
 
   @override
   Widget build(BuildContext context) {
+    // geminiTalk('have small conversation with me');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

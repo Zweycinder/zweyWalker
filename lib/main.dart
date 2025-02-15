@@ -1,7 +1,8 @@
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zwey_walker/gemini_ai.dart';
 import 'package:zwey_walker/theme/dark_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:zwey_walker/theme/light_theme.dart';
@@ -12,22 +13,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   try {
     await dotenv.load(fileName: ".env");
   } catch (e) {
     throw Exception('Error loading .env file: $e');
   }
+  MyAI().geminiInit();
 
-  OpenAI.instance.build(
-      token: dotenv.env['Token'],
-      baseOption: HttpSetup(
-        receiveTimeout: const Duration(seconds: 20),
-      ),
-      enableLog: true);
+  // Initialize ThemeProvider and load the saved theme preference
+  final themeProvider = ThemeProvider();
+  await themeProvider.loadTheme(); // Load theme preference
 
   runApp(
-    ListenableProvider(
-      create: (context) => ThemeProvider(),
+    ChangeNotifierProvider<ThemeProvider>(
+      create: (context) => themeProvider,
       child: const MyApp(),
     ),
   );
