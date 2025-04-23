@@ -1,6 +1,7 @@
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
+import 'package:zwey_walker/screens/control_screen/widgets/spiderweb_controller.dart';
 import 'package:zwey_walker/widgets/drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zwey_walker/widgets/devicetile_widget.dart';
@@ -73,7 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             // ignore: use_build_context_synchronously
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Controllerscreen(),
+                              builder: (context) => Controllerscreen(
+                                blueDevice: _blueDevice,
+                              ),
                             ),
                           );
                         },
@@ -92,17 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Controllerscreen(),
-                  ),
-                );
-              },
-              child: Text('control page'),
             ),
           ],
         ),

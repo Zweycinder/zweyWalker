@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class SpiderWebControl extends StatefulWidget {
   const SpiderWebControl({
@@ -12,7 +14,9 @@ class SpiderWebControl extends StatefulWidget {
     this.topleft,
     this.bottomright,
     this.bottomleft,
+    required this.blueDevice,
   });
+
   final Function? top;
   final Function? bottom;
   final Function? left;
@@ -21,6 +25,7 @@ class SpiderWebControl extends StatefulWidget {
   final Function? topleft;
   final Function? bottomright;
   final Function? bottomleft;
+  final BluetoothConnection blueDevice;
 
   @override
   State<SpiderWebControl> createState() => _SpiderWebControlState();
@@ -31,6 +36,8 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
   late double _containerWidth;
   late double _containerHeight;
 
+  DateTime _lastSentTime = DateTime.now().subtract(const Duration(seconds: 1));
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
@@ -39,7 +46,7 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
       child: Container(
         height: double.maxFinite,
         width: double.maxFinite,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
         ),
         child: GestureDetector(
@@ -50,7 +57,7 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
 
               if (_isTouchInsideContainer(details.localPosition)) {
                 _touchPosition = details.localPosition;
-                _printTouchDirection(details.localPosition, context);
+                _maybeSendTouchDirection(details.localPosition, context);
               }
             });
           },
@@ -80,12 +87,21 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
     return distance <= radius;
   }
 
-  void _printTouchDirection(Offset position, BuildContext context) {
-    final center = Offset(MediaQuery.of(context).size.width / 2,
-        MediaQuery.of(context).size.height / 2);
-    final angle = atan2(position.dy - center.dy, position.dx - center.dx);
-    final direction = _getDirectionFromAngle(angle, context);
-    print('Touch Direction: $direction');
+  void _maybeSendTouchDirection(Offset position, BuildContext context) {
+    if (DateTime.now().difference(_lastSentTime) >=
+        const Duration(seconds: 1)) {
+      _lastSentTime = DateTime.now();
+      final center = Offset(
+        MediaQuery.of(context).size.width / 2,
+        MediaQuery.of(context).size.height / 2,
+      );
+      final angle = atan2(position.dy - center.dy, position.dx - center.dx);
+      final direction = _getDirectionFromAngle(angle, context);
+      if (direction != 'Disabled Zone') {
+        widget.blueDevice.output.add(Uint8List.fromList(direction.codeUnits));
+        print('Touch Direction Sent: $direction');
+      }
+    }
   }
 
   String _getDirectionFromAngle(double angle, BuildContext context) {
@@ -110,11 +126,11 @@ class _SpiderWebControlState extends State<SpiderWebControl> {
     } else if (angle >= 7 * pi / 8 || angle < -7 * pi / 8) {
       return 'L';
     } else if (angle >= -7 * pi / 8 && angle < -5 * pi / 8) {
-      return 'TL';
+      return 'FL';
     } else if (angle >= -5 * pi / 8 && angle < -3 * pi / 8) {
-      return 'T';
+      return 'F';
     } else {
-      return 'TR';
+      return 'FR';
     }
   }
 }
@@ -183,17 +199,17 @@ class SpiderWebPainter extends CustomPainter {
 
   void _drawWeb(Canvas canvas, Size size, List<Offset> warpedPoints) {
     Paint mainThreadPaint = Paint()
-      ..color = threadColor.withValues(alpha: 0.8)
+      ..color = threadColor.withOpacity(0.8)
       ..strokeWidth = 1.5
       ..isAntiAlias = true;
 
     Paint radialThreadPaint = Paint()
-      ..color = threadColor.withValues(alpha: 0.8)
+      ..color = threadColor.withOpacity(0.8)
       ..strokeWidth = 1.5
       ..isAntiAlias = true;
 
     Paint minorThreadPaint = Paint()
-      ..color = minorThreadColor.withValues(alpha: 0.6)
+      ..color = minorThreadColor.withOpacity(0.6)
       ..strokeWidth = 0.5
       ..isAntiAlias = true;
 
@@ -226,7 +242,7 @@ class SpiderWebPainter extends CustomPainter {
       }
     }
 
-    Paint dewDropPaint = Paint()..color = dewDropColor.withValues(alpha: 0.6);
+    Paint dewDropPaint = Paint()..color = dewDropColor.withOpacity(0.6);
 
     for (var point in warpedPoints) {
       if (random.nextDouble() < 0.05) {

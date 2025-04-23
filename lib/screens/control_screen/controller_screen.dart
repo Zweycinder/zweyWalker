@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 // import 'package:speech_to_text/speech_to_text.dart';
 // import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:zwey_walker/screens/control_screen/widgets/normal_controller.dart';
 import 'package:zwey_walker/screens/control_screen/widgets/spiderweb_controller.dart';
 
 class Controllerscreen extends StatefulWidget {
   const Controllerscreen({
     super.key,
-    // required this.blueDevice,
+    required this.blueDevice,
   });
-  // final BluetoothConnection blueDevice;
+  final BluetoothConnection blueDevice;
 
   @override
   State<Controllerscreen> createState() => _ControllerscreenState();
@@ -21,8 +21,6 @@ class _ControllerscreenState extends State<Controllerscreen> {
   // String _lastWords = '';
 
   //  dotenv.env['Token'],
-
-  bool controller = true;
 
   @override
   void initState() {
@@ -52,20 +50,11 @@ class _ControllerscreenState extends State<Controllerscreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('C O N T R O L'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                controller = !controller;
-              });
-            },
-            icon: Icon(
-              Icons.control_camera_sharp,
-            ),
-          )
-        ],
       ),
-      body: controller ? SpiderWebControl() : NormalControl(),
+      body: SpiderWebControl(
+        blueDevice: widget.blueDevice,
+      ),
+
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: _speechToText.isNotListening
       //       ? Theme.of(context).colorScheme.inversePrimary
