@@ -13,8 +13,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  MyAI().geminiInit();
-
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
 
