@@ -87,6 +87,3 @@ License
 Acknowledgments
 
 - Thanks to the developers of the flutter_blue_serial package and the open-source Flutter community.
-
-[README.md](https://github.com/user-attachments/files/21257777/README.md)
-depending on where did you touch the web 
